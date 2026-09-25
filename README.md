@@ -1,33 +1,38 @@
-# Zepto Data \& AI Platform — Capstone Project
+# Zepto Data & AI Platform — Capstone Project
 
 This repository contains the three connected modules required by the capstone brief:
 
-* `/data\\\_pipeline` — scraping, cleaning, INR conversion, SQLite schema, SQL queries and pandas validation.
-* `/analytics` — Titanic profiling, EDA, predictive modeling, imbalance handling, tuning, regression and saved pipeline.
-* `/support\\\_assistant` — offline-first RAG support assistant using Sentence Transformers, ChromaDB, LangGraph and FastAPI.
+- `/data_pipeline` — scraping, cleaning, INR conversion, SQLite schema, SQL queries and pandas validation.
+- `/analytics` — Titanic profiling, EDA, predictive modeling, imbalance handling, tuning, regression and saved pipeline.
+- `/support_assistant` — offline-first RAG support assistant using Sentence Transformers, ChromaDB, LangGraph and FastAPI.
 
-## Repository structure
+---
+
+## Repository Structure
 
 ```text
-zepto\\\_capstone/
+zepto_capstone/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── data\\\_pipeline/
+│
+├── data_pipeline/
 │   ├── README.md
-│   ├── run\\\_pipeline.py
+│   ├── run_pipeline.py
 │   ├── queries.sql
-│   ├── sql\\\_outputs.txt
+│   ├── sql_outputs.txt
 │   ├── data/
 │   └── database/
+│
 ├── analytics/
 │   ├── README.md
-│   ├── 01\\\_eda.py
-│   ├── 02\\\_modeling.py
+│   ├── 01_eda.py
+│   ├── 02_modeling.py
 │   ├── titanic.csv
 │   ├── outputs/
 │   └── models/
-└── support\\\_assistant/
+│
+└── support_assistant/
     ├── README.md
     ├── main.py
     ├── rag.py
@@ -38,237 +43,523 @@ zepto\\\_capstone/
     ├── Dockerfile
     ├── .env.example
     ├── docs/
-    │   ├── doc\\\_01.txt
-    │   ├── doc\\\_02.txt
-    │   ├── doc\\\_03.txt
-    │   ├── doc\\\_04.txt
-    │   ├── doc\\\_05.txt
-    │   ├── doc\\\_06.txt
-    │   ├── doc\\\_07.txt
-    │   └── doc\\\_08.txt
-    └── chroma\\\_db/
+    │   ├── doc_01.txt
+    │   ├── doc_02.txt
+    │   ├── doc_03.txt
+    │   ├── doc_04.txt
+    │   ├── doc_05.txt
+    │   ├── doc_06.txt
+    │   ├── doc_07.txt
+    │   └── doc_08.txt
+    └── chroma_db/
 ```
 
-## Requirements choice
+---
 
-A single consolidated `requirements.txt` is used at the repository root. The support assistant also contains a module-specific requirements file because it has heavier GenAI dependencies.
+## Requirements and Setup
 
-Install from the root:
+A single consolidated `requirements.txt` is used at the repository root.
+
+The Support Assistant also contains a module-specific `requirements.txt` for its additional dependencies.
+
+### Create Virtual Environment
+
+Windows PowerShell:
 
 ```powershell
 python -m venv .venv
-.venv\\\\Scripts\\\\activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
 ```
 
-If Windows PowerShell blocks activation, use:
+Activate:
+
+```powershell
+.venv\Scripts\activate
+```
+
+If PowerShell blocks activation:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.venv\\\\Scripts\\\\activate
+.venv\Scripts\activate
 ```
 
-## Module 1 — Data Pipeline
+### Install Dependencies
 
-The scraper uses `requests` and `BeautifulSoup` against `books.toscrape.com`, using the first five paginated catalogue pages. This produces at least 60 books without login or an API key.
+From the repository root:
 
-The required project-defined currency rate is:
+```powershell
+pip install -r requirements.txt
+```
+
+---
+
+# Module 1 — Data Pipeline
+
+## Overview
+
+The data pipeline collects book data from `books.toscrape.com`, cleans the scraped values, converts prices from GBP to INR using the fixed project-defined exchange rate, stores the data in SQLite, executes SQL queries and validates the SQL results using pandas.
+
+The project-defined conversion rate is:
 
 **1 GBP = 105.50 INR**
 
-This is a fixed assignment constant, not a live market rate.
+This is a fixed assignment constant and not a live market exchange rate.
 
-Run:
+## Run
+
+From the repository root:
 
 ```powershell
-cd data\\\_pipeline
-python run\\\_pipeline.py
+cd data_pipeline
+python run_pipeline.py
 ```
+
+## Pipeline Steps
 
 The script:
 
-1. Scrapes five pages.
-2. Cleans price, rating and availability.
-3. Applies median imputation to numeric parsing failures.
-4. Creates a normalized SQLite database with `categories` and `books`.
-5. Runs the required SQL queries.
-6. Saves query output in `sql\\\_outputs.txt`.
-7. Reads SQL results into pandas and reproduces the JOIN using `pd.merge`.
+1. Scrapes five pages from `books.toscrape.com`.
+2. Collects at least 60 books.
+3. Cleans price, rating and availability fields.
+4. Applies median imputation to numeric parsing failures.
+5. Creates a normalized SQLite database.
+6. Stores categories and books using relational tables.
+7. Executes the required SQL queries.
+8. Saves SQL results in `sql_outputs.txt`.
+9. Reads SQL results into pandas.
+10. Reproduces the required JOIN using `pd.merge`.
 
-## Module 2 — Analytics
+## Generated Outputs
 
-The analytics module deliberately loads the Titanic dataset once in `01\\\_eda.py` using:
+The pipeline generates:
 
-```python
-sns.load\\\_dataset("titanic")
+```text
+data_pipeline/
+├── database/
+│   └── zepto_books.db
+└── sql_outputs.txt
 ```
 
-Immediately after loading, it saves:
+---
+
+# Module 2 — Analytics
+
+## Overview
+
+The analytics module uses the Titanic dataset to perform data profiling, exploratory data analysis, preprocessing, classification, imbalance handling, hyperparameter tuning and regression.
+
+The Titanic dataset is loaded once in `01_eda.py` using:
+
+```python
+sns.load_dataset("titanic")
+```
+
+Immediately after loading, it is saved as:
 
 ```text
 analytics/titanic.csv
 ```
 
-The modeling module then reads that committed CSV and does not call `sns.load\\\_dataset()` again.
+The modeling module reads the committed CSV instead of loading the dataset again.
 
-Run:
+## Run
+
+From the repository root:
 
 ```powershell
 cd analytics
-python 01\\\_eda.py
-python 02\\\_modeling.py
+python 01_eda.py
+python 02_modeling.py
 ```
 
-The EDA script creates the required profiling output, missing-value analysis, outlier analysis, survival-rate breakdowns, correlation heatmap, four or more multivariate charts, and the age/fare standardization check.
+## EDA
+
+The EDA script performs:
+
+- Dataset profiling
+- Missing-value analysis
+- Cleaning decisions
+- Univariate analysis
+- Multivariate analysis
+- Survival-rate analysis
+- Correlation analysis
+- Outlier analysis
+- Age and fare standardization
+- Required charts and visualizations
+
+## Modeling
 
 The modeling script:
 
-* performs a stratified train/test split before preprocessing;
-* uses a train-only `ColumnTransformer` and `Pipeline`;
-* trains Logistic Regression, Decision Tree and Random Forest;
-* reports confusion matrices, accuracy, precision, recall, F1 and ROC/AUC;
-* compares baseline, `class\\\_weight="balanced"` and SMOTE;
-* runs `GridSearchCV` on Random Forest;
-* reports OOB score using `RandomForestClassifier(oob\\\_score=True, ...)`;
-* performs the fare regression side-task;
-* saves the complete preprocessing + estimator pipeline with `joblib.dump`.
+- Performs a stratified train/test split.
+- Uses preprocessing pipelines.
+- Trains Logistic Regression.
+- Trains Decision Tree.
+- Trains Random Forest.
+- Reports confusion matrices.
+- Reports accuracy, precision, recall, F1 and ROC/AUC.
+- Compares baseline and balanced class weighting.
+- Compares SMOTE-based training.
+- Applies SMOTE only to the training data.
+- Runs `GridSearchCV` on Random Forest.
+- Reports the Random Forest OOB score.
+- Performs the fare regression task.
+- Reports regression metrics.
+- Saves the complete preprocessing and model pipeline using `joblib`.
+- Reloads the saved pipeline and verifies predictions.
 
-## Module 3 — Support Assistant
+## Generated Outputs
 
-The graded baseline is fully offline for LLM calls. The default is:
+The analytics module produces:
 
 ```text
-MOCK\\\_LLM=1
+analytics/
+├── titanic.csv
+├── outputs/
+└── models/
+```
+
+---
+
+# Module 3 — Support Assistant
+
+## Overview
+
+The Support Assistant is an offline-first Retrieval-Augmented Generation system for answering Zepto policy questions.
+
+The graded baseline uses deterministic mock behavior and does not require an external LLM API key.
+
+The default mode is:
+
+```text
+MOCK_LLM=1
 ```
 
 No LLM API key is required for the graded path.
 
-Embeddings use `all-MiniLM-L6-v2` locally and vectors are stored in ChromaDB.
+The system uses:
 
-Run:
+- Sentence Transformers
+- `all-MiniLM-L6-v2`
+- ChromaDB
+- LangGraph
+- Pydantic
+- FastAPI
+
+## Run
+
+From the repository root:
 
 ```powershell
-cd support\\\_assistant
+cd support_assistant
 python ingest.py
 uvicorn main:app --reload
 ```
 
-Then POST to:
+The local API runs at:
 
 ```text
-http://127.0.0.1:8000/ask
+http://127.0.0.1:7860
 ```
 
-Example:
+Swagger documentation is available at:
+
+```text
+http://127.0.0.1:7860/docs
+```
+
+## Policy Query Example
 
 ```powershell
 Invoke-RestMethod -Method Post `
-  -Uri http://127.0.0.1:8000/ask `
+  -Uri http://127.0.0.1:7860/ask `
   -ContentType "application/json" `
   -Body '{"query":"How long does Zepto delivery take?"}'
 ```
 
-General-question example:
+Expected response structure:
+
+```json
+{
+  "answer": "Based on the retrieved context: ...",
+  "sources": ["doc_01_chunk_0"],
+  "confidence": 1.0
+}
+```
+
+## General Query Example
 
 ```powershell
 Invoke-RestMethod -Method Post `
-  -Uri http://127.0.0.1:8000/ask `
+  -Uri http://127.0.0.1:7860/ask `
   -ContentType "application/json" `
   -Body '{"query":"What is the capital of India?"}'
 ```
 
-### Support-assistant architecture
+Expected response structure:
+
+```json
+{
+  "answer": "I can only answer questions about Zepto policies right now.",
+  "sources": [],
+  "confidence": 1.0
+}
+```
+
+---
+
+# Support Assistant Architecture
 
 ```text
 8 policy documents
        |
        v
-chunking -> all-MiniLM-L6-v2 embeddings -> ChromaDB
-                                           |
-query -> classify\\\_intent ------------------+
-            |                              |
-   policy\\\_question                   general\\\_question
-            |                              |
-            v                              v
- retrieve\\\_and\\\_answer                 direct\\\_answer
-            |
-            +------------+
-                         v
-              Pydantic response schema
-                         |
-                         v
-                    FastAPI /ask
+Document chunking
+       |
+       v
+all-MiniLM-L6-v2 embeddings
+       |
+       v
+ChromaDB
+       |
+       v
+Query
+       |
+       v
+classify_intent
+       |
+       +-------------------------+
+       |                         |
+       v                         v
+policy_question          general_question
+       |                         |
+       v                         v
+retrieve_and_answer       direct_answer
+       |                         |
+       +------------+------------+
+                    |
+                    v
+          Pydantic validation
+                    |
+                    v
+               FastAPI /ask
 ```
 
-Only generation/classification behavior changes with `MOCK\\\_LLM`. Retrieval itself always uses the local embedding model and ChromaDB. In mock mode there is no LLM network call.
+The LangGraph workflow contains three main nodes:
 
-## Docker — Support Assistant
+- `classify_intent`
+- `retrieve_and_answer`
+- `direct_answer`
 
-From `/support\\\_assistant`:
+The conditional routing sends policy questions to retrieval and general questions to the direct-answer path.
+
+Retrieval uses the local embedding model and ChromaDB.
+
+In `MOCK_LLM` mode, no external LLM network call is made.
+
+---
+
+# MOCK_LLM Mode
+
+The Support Assistant supports deterministic offline execution.
+
+When `MOCK_LLM` is unset or set to `1`:
+
+- Intent classification uses the required keyword-based logic.
+- Policy questions are routed to retrieval.
+- Relevant document chunks are retrieved from ChromaDB.
+- A deterministic context-based answer is generated.
+- General questions receive the fixed response.
+- No external LLM API call is made.
+
+The optional real-LLM path can be enabled separately using `MOCK_LLM=0`.
+
+The real-LLM path is not required for the graded baseline.
+
+---
+
+# Docker — Support Assistant
+
+A Dockerfile is included for the Support Assistant.
+
+From the `support_assistant` directory:
 
 ```powershell
 docker build -t zepto-support .
+```
+
+Run:
+
+```powershell
 docker run --rm -p 7860:7860 zepto-support
 ```
 
-Then use:
+The Docker container starts Uvicorn on port `7860`.
+
+The Docker API can then be accessed at:
 
 ```text
-http://127.0.0.1:7860/ask
+http://127.0.0.1:7860
 ```
 
-## Git workflow required by the brief
+Swagger documentation:
 
-The capstone requires at least one feature branch that is:
+```text
+http://127.0.0.1:7860/docs
+```
 
-* created from `main`;
-* committed at least twice;
-* merged back into `main`.
+Docker is an optional local execution method for the Support Assistant. The graded baseline can be executed locally using `uvicorn`.
 
-Use the following sequence from the repository root:
+---
+
+# Design Decisions
+
+## Data Pipeline
+
+SQLite was selected as the relational database because it provides lightweight relational storage without requiring a separate database server.
+
+A fixed exchange rate of:
+
+```text
+1 GBP = 105.50 INR
+```
+
+is used so that the pipeline produces reproducible INR values.
+
+The database is normalized into related tables for categories and books.
+
+Pandas `merge` is used to reproduce the required SQL JOIN and validate the relational result outside SQL.
+
+## Analytics
+
+The Titanic dataset is loaded once and saved locally as `titanic.csv` so that the modeling stage can use an offline dataset.
+
+A stratified train/test split is used to preserve the observed target-class proportions.
+
+Preprocessing is performed inside pipelines to prevent data leakage.
+
+SMOTE is applied only to the training data.
+
+Multiple classification models are evaluated instead of relying on a single classifier.
+
+The complete preprocessing and estimator pipeline is saved so that it can be reloaded and used on raw data.
+
+## Support Assistant
+
+Local Sentence Transformer embeddings and ChromaDB were selected to provide document retrieval without requiring an external vector database.
+
+LangGraph is used to represent the intent-routing and retrieval workflow.
+
+`MOCK_LLM` provides a deterministic offline execution path so that the graded system does not depend on an external LLM provider.
+
+Pydantic is used to validate the structured response.
+
+FastAPI provides the REST API interface.
+
+Docker provides a reproducible runtime configuration for the Support Assistant.
+
+---
+
+# Project Outputs
+
+## Data Pipeline
+
+- Scraped and cleaned book data
+- SQLite database
+- SQL query outputs
+- Pandas JOIN validation
+
+## Analytics
+
+- Offline Titanic dataset
+- EDA results
+- Visualizations
+- Classification metrics
+- Imbalance comparison
+- GridSearchCV results
+- OOB score
+- Regression metrics
+- Saved and reloadable ML pipeline
+
+## Support Assistant
+
+- Policy document corpus
+- Document chunks
+- ChromaDB vector index
+- Retrieved document sources
+- Structured responses
+- FastAPI `/ask` endpoint
+- Swagger documentation
+- Dockerfile
+
+---
+
+# Git Workflow
+
+The project follows a feature-branch workflow as required by the capstone.
+
+The repository history contains:
+
+- Initial project commit
+- `feature/capstone` feature branch
+- Multiple commits on the feature branch
+- Merge of `feature/capstone` into `main`
+
+The Git history can be viewed using:
 
 ```powershell
-git init
-git branch -M main
-git add .
-git commit -m "Initial capstone structure"
-
-git checkout -b feature/capstone-modules
-git add .
-git commit -m "Add capstone modules"
-git add .
-git commit -m "Complete analysis and support assistant"
-
-git checkout main
-git merge --no-ff feature/capstone-modules -m "Merge capstone feature branch"
-
 git log --graph --oneline --decorate --all
 ```
 
-Create one public GitHub repository, for example:
+The final project is maintained as one public GitHub repository containing:
 
 ```text
-zepto-capstone
+/data_pipeline
+/analytics
+/support_assistant
+README.md
 ```
 
-Then:
+---
 
-```powershell
-git remote add origin https://github.com/YOUR\\\_USERNAME/zepto-capstone.git
-git push -u origin main
-git push origin feature/capstone-modules
+# Academic Integrity
+
+The code, analysis and written interpretations in this repository are intended to represent the student's own project work.
+
+All three modules have been executed and tested locally before submission.
+
+---
+
+# Final Project
+
+The three modules together demonstrate an end-to-end AI/ML workflow:
+
+```text
+Data Collection
+       |
+       v
+Data Cleaning
+       |
+       v
+Database Storage
+       |
+       v
+Data Analysis
+       |
+       v
+Machine Learning
+       |
+       v
+Model Evaluation
+       |
+       v
+Document Retrieval
+       |
+       v
+Support Assistant
+       |
+       v
+FastAPI Service
 ```
 
-The final submission is the single public GitHub repository link.
-
-## Academic-integrity note
-
-The capstone brief explicitly requires that the code, analysis and written interpretations be authored by the student. This package is a working implementation scaffold/reference. Before submission, read every file, run it yourself, understand it, and adapt the written interpretations to your own observed outputs.
-
-## Git Workflow
-
-
-
-This project was developed using a feature branch and merged into the main branch.
-
+The complete project is submitted as a single public GitHub repository.
