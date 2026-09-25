@@ -1,33 +1,33 @@
-# Zepto Data & AI Platform — Capstone Project
+# Zepto Data \& AI Platform — Capstone Project
 
 This repository contains the three connected modules required by the capstone brief:
 
-- `/data_pipeline` — scraping, cleaning, INR conversion, SQLite schema, SQL queries and pandas validation.
-- `/analytics` — Titanic profiling, EDA, predictive modeling, imbalance handling, tuning, regression and saved pipeline.
-- `/support_assistant` — offline-first RAG support assistant using Sentence Transformers, ChromaDB, LangGraph and FastAPI.
+* `/data\\\_pipeline` — scraping, cleaning, INR conversion, SQLite schema, SQL queries and pandas validation.
+* `/analytics` — Titanic profiling, EDA, predictive modeling, imbalance handling, tuning, regression and saved pipeline.
+* `/support\\\_assistant` — offline-first RAG support assistant using Sentence Transformers, ChromaDB, LangGraph and FastAPI.
 
 ## Repository structure
 
 ```text
-zepto_capstone/
+zepto\\\_capstone/
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
-├── data_pipeline/
+├── data\\\_pipeline/
 │   ├── README.md
-│   ├── run_pipeline.py
+│   ├── run\\\_pipeline.py
 │   ├── queries.sql
-│   ├── sql_outputs.txt
+│   ├── sql\\\_outputs.txt
 │   ├── data/
 │   └── database/
 ├── analytics/
 │   ├── README.md
-│   ├── 01_eda.py
-│   ├── 02_modeling.py
+│   ├── 01\\\_eda.py
+│   ├── 02\\\_modeling.py
 │   ├── titanic.csv
 │   ├── outputs/
 │   └── models/
-└── support_assistant/
+└── support\\\_assistant/
     ├── README.md
     ├── main.py
     ├── rag.py
@@ -38,15 +38,15 @@ zepto_capstone/
     ├── Dockerfile
     ├── .env.example
     ├── docs/
-    │   ├── doc_01.txt
-    │   ├── doc_02.txt
-    │   ├── doc_03.txt
-    │   ├── doc_04.txt
-    │   ├── doc_05.txt
-    │   ├── doc_06.txt
-    │   ├── doc_07.txt
-    │   └── doc_08.txt
-    └── chroma_db/
+    │   ├── doc\\\_01.txt
+    │   ├── doc\\\_02.txt
+    │   ├── doc\\\_03.txt
+    │   ├── doc\\\_04.txt
+    │   ├── doc\\\_05.txt
+    │   ├── doc\\\_06.txt
+    │   ├── doc\\\_07.txt
+    │   └── doc\\\_08.txt
+    └── chroma\\\_db/
 ```
 
 ## Requirements choice
@@ -57,7 +57,7 @@ Install from the root:
 
 ```powershell
 python -m venv .venv
-.venv\Scripts\activate
+.venv\\\\Scripts\\\\activate
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
@@ -66,7 +66,7 @@ If Windows PowerShell blocks activation, use:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.venv\Scripts\activate
+.venv\\\\Scripts\\\\activate
 ```
 
 ## Module 1 — Data Pipeline
@@ -82,25 +82,26 @@ This is a fixed assignment constant, not a live market rate.
 Run:
 
 ```powershell
-cd data_pipeline
-python run_pipeline.py
+cd data\\\_pipeline
+python run\\\_pipeline.py
 ```
 
 The script:
+
 1. Scrapes five pages.
 2. Cleans price, rating and availability.
 3. Applies median imputation to numeric parsing failures.
 4. Creates a normalized SQLite database with `categories` and `books`.
 5. Runs the required SQL queries.
-6. Saves query output in `sql_outputs.txt`.
+6. Saves query output in `sql\\\_outputs.txt`.
 7. Reads SQL results into pandas and reproduces the JOIN using `pd.merge`.
 
 ## Module 2 — Analytics
 
-The analytics module deliberately loads the Titanic dataset once in `01_eda.py` using:
+The analytics module deliberately loads the Titanic dataset once in `01\\\_eda.py` using:
 
 ```python
-sns.load_dataset("titanic")
+sns.load\\\_dataset("titanic")
 ```
 
 Immediately after loading, it saves:
@@ -109,35 +110,36 @@ Immediately after loading, it saves:
 analytics/titanic.csv
 ```
 
-The modeling module then reads that committed CSV and does not call `sns.load_dataset()` again.
+The modeling module then reads that committed CSV and does not call `sns.load\\\_dataset()` again.
 
 Run:
 
 ```powershell
 cd analytics
-python 01_eda.py
-python 02_modeling.py
+python 01\\\_eda.py
+python 02\\\_modeling.py
 ```
 
 The EDA script creates the required profiling output, missing-value analysis, outlier analysis, survival-rate breakdowns, correlation heatmap, four or more multivariate charts, and the age/fare standardization check.
 
 The modeling script:
-- performs a stratified train/test split before preprocessing;
-- uses a train-only `ColumnTransformer` and `Pipeline`;
-- trains Logistic Regression, Decision Tree and Random Forest;
-- reports confusion matrices, accuracy, precision, recall, F1 and ROC/AUC;
-- compares baseline, `class_weight="balanced"` and SMOTE;
-- runs `GridSearchCV` on Random Forest;
-- reports OOB score using `RandomForestClassifier(oob_score=True, ...)`;
-- performs the fare regression side-task;
-- saves the complete preprocessing + estimator pipeline with `joblib.dump`.
+
+* performs a stratified train/test split before preprocessing;
+* uses a train-only `ColumnTransformer` and `Pipeline`;
+* trains Logistic Regression, Decision Tree and Random Forest;
+* reports confusion matrices, accuracy, precision, recall, F1 and ROC/AUC;
+* compares baseline, `class\\\_weight="balanced"` and SMOTE;
+* runs `GridSearchCV` on Random Forest;
+* reports OOB score using `RandomForestClassifier(oob\\\_score=True, ...)`;
+* performs the fare regression side-task;
+* saves the complete preprocessing + estimator pipeline with `joblib.dump`.
 
 ## Module 3 — Support Assistant
 
 The graded baseline is fully offline for LLM calls. The default is:
 
 ```text
-MOCK_LLM=1
+MOCK\\\_LLM=1
 ```
 
 No LLM API key is required for the graded path.
@@ -147,7 +149,7 @@ Embeddings use `all-MiniLM-L6-v2` locally and vectors are stored in ChromaDB.
 Run:
 
 ```powershell
-cd support_assistant
+cd support\\\_assistant
 python ingest.py
 uvicorn main:app --reload
 ```
@@ -184,12 +186,12 @@ Invoke-RestMethod -Method Post `
        v
 chunking -> all-MiniLM-L6-v2 embeddings -> ChromaDB
                                            |
-query -> classify_intent ------------------+
+query -> classify\\\_intent ------------------+
             |                              |
-   policy_question                   general_question
+   policy\\\_question                   general\\\_question
             |                              |
             v                              v
- retrieve_and_answer                 direct_answer
+ retrieve\\\_and\\\_answer                 direct\\\_answer
             |
             +------------+
                          v
@@ -199,11 +201,11 @@ query -> classify_intent ------------------+
                     FastAPI /ask
 ```
 
-Only generation/classification behavior changes with `MOCK_LLM`. Retrieval itself always uses the local embedding model and ChromaDB. In mock mode there is no LLM network call.
+Only generation/classification behavior changes with `MOCK\\\_LLM`. Retrieval itself always uses the local embedding model and ChromaDB. In mock mode there is no LLM network call.
 
 ## Docker — Support Assistant
 
-From `/support_assistant`:
+From `/support\\\_assistant`:
 
 ```powershell
 docker build -t zepto-support .
@@ -219,9 +221,10 @@ http://127.0.0.1:7860/ask
 ## Git workflow required by the brief
 
 The capstone requires at least one feature branch that is:
-- created from `main`;
-- committed at least twice;
-- merged back into `main`.
+
+* created from `main`;
+* committed at least twice;
+* merged back into `main`.
 
 Use the following sequence from the repository root:
 
@@ -252,7 +255,7 @@ zepto-capstone
 Then:
 
 ```powershell
-git remote add origin https://github.com/YOUR_USERNAME/zepto-capstone.git
+git remote add origin https://github.com/YOUR\\\_USERNAME/zepto-capstone.git
 git push -u origin main
 git push origin feature/capstone-modules
 ```
@@ -262,3 +265,10 @@ The final submission is the single public GitHub repository link.
 ## Academic-integrity note
 
 The capstone brief explicitly requires that the code, analysis and written interpretations be authored by the student. This package is a working implementation scaffold/reference. Before submission, read every file, run it yourself, understand it, and adapt the written interpretations to your own observed outputs.
+
+## Git Workflow
+
+
+
+This project was developed using a feature branch and merged into the main branch.
+
