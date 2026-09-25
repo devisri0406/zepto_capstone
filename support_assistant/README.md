@@ -94,9 +94,7 @@ Document ingestion
 
 ## Docker
 
-```powershell
-docker build -t zepto-support .
-docker run --rm -p 7860:7860 zepto-support
-```
+Build the image from the `support_assistant` directory:
 
-The Dockerfile starts Uvicorn on port 7860.
+```powershell
+docker build -t zepto-support-assistant .
