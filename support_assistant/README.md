@@ -11,6 +11,7 @@ No LLM account or API key is required for the graded baseline.
 From the repository root:
 
 ```powershell
+cd support_assistant
 pip install -r requirements.txt
 cd support_assistant
 python ingest.py
@@ -22,7 +23,7 @@ uvicorn main:app --reload
 Policy query:
 
 ```powershell
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/ask `
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:7860/ask `
   -ContentType "application/json" `
   -Body '{"query":"How long does delivery take?"}'
 ```
@@ -40,7 +41,7 @@ Expected shape:
 General query:
 
 ```powershell
-Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/ask `
+Invoke-RestMethod -Method Post -Uri http://127.0.0.1:7860/ask `
   -ContentType "application/json" `
   -Body '{"query":"What is the capital of India?"}'
 ```
@@ -94,7 +95,7 @@ Document ingestion
 
 ## Docker
 
-Build the image from the `support_assistant` directory:
-
 ```powershell
-docker build -t zepto-support-assistant .
+docker build -t zepto-support .
+docker run --rm -p 7860:7860 zepto-support
+
