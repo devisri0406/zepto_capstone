@@ -253,7 +253,7 @@ From the repository root:
 ```powershell
 cd support_assistant
 python ingest.py
-uvicorn main:app --reload
+uvicorn main:app --host 127.0.0.1 --port 7860
 ```
 
 The local API runs at:

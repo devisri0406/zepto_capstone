@@ -13,9 +13,8 @@ From the repository root:
 ```powershell
 cd support_assistant
 pip install -r requirements.txt
-cd support_assistant
 python ingest.py
-uvicorn main:app --reload
+uvicorn main:app --host 127.0.0.1 --port 7860
 ```
 
 ## Example calls
