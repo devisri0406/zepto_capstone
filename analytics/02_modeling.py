@@ -314,11 +314,32 @@ report.append("\n## Reload check\n")
 report.append(f"Reloaded pipeline predictions on raw rows: {reload_prediction.tolist()}\n")
 
 # Keep the required metric groups separate.
+
+# report.append("\n## Metric-group structure\n")
+# report.append(
+#     "Classification metrics (accuracy, precision, recall, F1, AUC) are kept "
+#     "separate from regression metrics (MAE, RMSE, R2, Adjusted R2) because the "
+#     "two model types use different scales and objectives.\n"
+# )
+
+# (OUT / "modeling_report.md").write_text("\n".join(report), encoding="utf-8")
+# print((OUT / "modeling_report.md").read_text())
+# Keep the required metric groups separate.
 report.append("\n## Metric-group structure\n")
 report.append(
     "Classification metrics (accuracy, precision, recall, F1, AUC) are kept "
     "separate from regression metrics (MAE, RMSE, R2, Adjusted R2) because the "
     "two model types use different scales and objectives.\n"
+)
+
+report.append("\n## Final classifier recommendation\n")
+report.append(
+    "Random Forest is selected for deployment because it achieved the highest "
+    "test accuracy (0.8156) and F1 score (0.7442) among the three evaluated "
+    "classifiers. It also achieved a precision of 0.8000, recall of 0.6957, "
+    "and AUC of 0.8300. The tuned Random Forest achieved an OOB score of "
+    "0.8272 and a test accuracy of 0.8156, providing a consistent result on "
+    "the held-out test set.\n"
 )
 
 (OUT / "modeling_report.md").write_text("\n".join(report), encoding="utf-8")

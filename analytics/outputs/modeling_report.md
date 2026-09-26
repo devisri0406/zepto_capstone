@@ -59,3 +59,8 @@ Reloaded pipeline predictions on raw rows: [0, 0, 0]
 ## Metric-group structure
 
 Classification metrics (accuracy, precision, recall, F1, AUC) are kept separate from regression metrics (MAE, RMSE, R2, Adjusted R2) because the two model types use different scales and objectives.
+
+
+## Final classifier recommendation
+
+Random Forest is selected for deployment because it achieved the highest test accuracy (0.8156) and F1 score (0.7442) among the three evaluated classifiers. It also achieved a precision of 0.8000, recall of 0.6957, and AUC of 0.8300. The tuned Random Forest achieved an OOB score of 0.8272 and a test accuracy of 0.8156, providing a consistent result on the held-out test set.
